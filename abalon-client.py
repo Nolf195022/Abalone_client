@@ -1,7 +1,10 @@
 import socket
 import json
 import sys
+import random
+import time
 from threading import Thread
+from goodmovesonly import good_moves
 
 def receiveJSON(socket):
     fullreceive = False
@@ -22,54 +25,66 @@ def sendJSON(socket, data):
         sent = socket.send(data[totalsend:])
         totalsend += sent
 
-
-playernames = ['Albert','Patrick']
-playernumber = 1
-if len(sys.argv) > 1:
-    for port in sys.argv[1:]:
-        port = int(port)
-        message = {"request": "subscribe","port": port,"name": playernames[playernumber-1],"matricules": ["19022", "18164"]}
-        playernumber += 1
+def subscribe(port,name):
+    port = int(port)
+    message = {"request": "subscribe","port": port,"name": name,"matricules": ["19022", "18164"]}
+    s = socket.socket()
+    s.connect(('localhost',3000))
+    sendJSON(s, message)
+    s.close()
+    #boucle de réception de requêtes
+    listening = True
+    while listening == True:
         s = socket.socket()
-        s.connect(('localhost',3000))
-        sendJSON(s, message)
-        s.close()
-        #boucle de réception de requêtes
-        listening = True
-        while listening == True:
-            s = socket.socket()
-            s.bind(('0.0.0.0', port))
-            s.listen()
-            client, address = s.accept()
-            serverrequest = receiveJSON(client)
-            print(serverrequest)
-            if serverrequest['request'] == 'ping':
-                sendJSON(client, {'response': 'pong'})
-                listening = False
+        s.bind(('0.0.0.0', port))
+        s.listen()
+        client, address = s.accept()
+        serverrequest = receiveJSON(client)
+        print(serverrequest)
+        if serverrequest['request'] == 'ping':
+            sendJSON(client, {'response': 'pong'})
+            listening = False
 
-#     if serverrequest['request'] == 'play':
-#         # 'current': 0 -> black, 'current': 1 -> white
-#         if serverrequest['state']['current'] == 0:
-#             move = {"marbles": [[6, 4], [6, 5]],"direction": "W"}
-#             moverequest = {"response": "move","move": move,"message": "Fun message black"}
-#         if serverrequest['state']['current'] == 1:
-#             move = {"marbles": [[2, 2], [2, 3], [2, 4]],"direction": "W"}
-#             moverequest = {"response": "move","move": move,"message": "Fun message white"}
-        
-#         sendJSON(client, moverequest)
-
-# 'board': [
-# 			['W', 'W', 'W', 'W', 'W', 'X', 'X', 'X', 'X'],
-# 			['W', 'W', 'W', 'W', 'W', 'W', 'X', 'X', 'X'],
-# 			['E', 'E', 'W', 'W', 'W', 'E', 'E', 'X', 'X'],
-# 			['E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'X'],
-# 			['E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E'],
-# 			['X', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E'],
-# 			['X', 'X', 'E', 'E', 'B', 'B', 'B', 'E', 'E'],
-# 			['X', 'X', 'X', 'B', 'B', 'B', 'B', 'B', 'B'],
-# 			['X', 'X', 'X', 'X', 'B', 'B', 'B', 'B', 'B']
-# 		]
+def SENDmove(server_request):
+    # 'current': 0 -> black, 'current': 1 -> white
+    playercolors = ['B','W']
+    playerindice = server_request['state']['current']
+    moves = good_moves(server_request['state']['board'],playercolors[playerindice])
+    move = random.choice(moves)
+    marbles = []
+    for i in move:
+        if type(i) is tuple:
+            marbles.append(list(i))
+        else:
+            direction = i
+    moverequest = {"marbles": marbles,"direction": direction}
+    return {"response": "move","move": moverequest,"message": "Fun message from{}".format(server_request['state']['players'][playerindice])}
 
 
-
-
+if len(sys.argv) == 2:
+    port = sys.argv[1]
+    name = 'Random AI'
+elif len(sys.argv) == 3:
+    port = sys.argv[1]
+    name = sys.argv[2]
+elif len(sys.argv) > 3:
+    print('Invalid input')
+    sys.exit()
+else:
+    port = '5000'
+    name = 'Random AI'
+subscribe(port, name)
+listening = True
+while listening == True:
+        s = socket.socket()
+        s.bind(('0.0.0.0', int(port)))
+        s.listen()
+        client, address = s.accept()
+        serverrequest = receiveJSON(client)
+        print(serverrequest['request'])
+        if serverrequest['request'] == 'ping':
+            sendJSON(client, {'response': 'pong'})
+        if serverrequest['request'] == 'play':
+            start = time.time()
+            sendJSON(client, SENDmove(serverrequest))
+            print('Temps de réponse : {} s'.format(time.time()-start))
