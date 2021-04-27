@@ -70,6 +70,7 @@ if len(sys.argv) > 1:
 # 			['X', 'X', 'X', 'X', 'B', 'B', 'B', 'B', 'B']
 # 		]
 
+#test
 
 
 
