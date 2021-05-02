@@ -39,7 +39,7 @@ def makemove(state, move, player):
             direction = i
     last_marble = ()
     for marble in marbles:
-
+        pass
     
 
 def winner(state):

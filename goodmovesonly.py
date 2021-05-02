@@ -75,41 +75,34 @@ def good_moves(board,player):
                     #eliminer les series de plus de 3 pions et les series qui se suicideraient
                     try:
                         if xmax+dx == -1 or ymax+dy == -1:
-                            #print(0,xmax+dx,"MAX",(xmax, ymax),"MIN",(xmin, ymin),"dxdy", (dx, dy), direction)
                             continue
                         if board[xmax+dx][ymax+dy] in ['X',player]:
                             if (0, 3) in group and (1, 3) in group and(2, 3)in group:
                                 pass
-                                #print(1,xmax+dx,"MAX",(xmax, ymax),"MIN",(xmin, ymin),"dxdy", (dx, dy), direction)
                             continue
                         if board[xmax+dx][ymax+dy] == 'E':
                             if (0, 3) in group and (1, 3) in group and(2, 3)in group:
                                 pass
-                                #print(2,"MAX",(xmax, ymax),"MIN",(xmin, ymin),"dxdy", (dx, dy), direction)
                             validate()
                             continue
                         else:
                             try:
                                 if board[xmax+2*dx][ymax+2*dy] == 'E':
                                     if (0, 3) in group and (1, 3) in group and(2, 3)in group:
-                                        #print(3)
                                         pass
                                     validate()
                                     continue
                                 elif board[xmax+3*dx][ymax+3*dy] == 'E' and board[xmax+2*dx][ymax+2*dy] != player and len(group) == 3:
                                     if (0, 3) in group and (1, 3) in group and(2, 3)in group:
-                                        #print(4)
                                         pass
                                     validate()
                                     continue
                             except IndexError:
                                 if (0, 3) in group and (1, 3) in group and(2, 3)in group:
-                                    #print(5)
                                     pass
                                 continue 
                     except IndexError:
                         if (0, 3) in group and (1, 3) in group and(2, 3)in group:
-                            #print(6)
                             pass
                         continue
                     try:
@@ -117,12 +110,10 @@ def good_moves(board,player):
                             continue
                         if board[xmin-dx][ymin-dy] in ['X',player]:
                             if (0, 3) in group and (1, 3) in group and(2, 3)in group:
-                                #print(7)
                                 pass
                             continue
                         if board[xmin-dx][ymin-dy] == 'E':
                             if (0, 3) in group and (1, 3) in group and(2, 3)in group:
-                                #print(8)
                                 pass
                             validate(opposite[direction])
                             continue
@@ -130,24 +121,20 @@ def good_moves(board,player):
                             try:
                                 if board[xmin-2*dx][ymin-2*dy] == 'E':
                                     if (0, 3) in group and (1, 3) in group and(2, 3)in group:
-                                        #print(9)
                                         pass
                                     validate(opposite[direction])
                                     continue
                                 elif board[xmin-3*dx][ymin-3*dy] == 'E' and board[xmin-2*dx][ymin-2*dy] != player and len(group) == 3:
                                     if (0, 3) in group and (1, 3) in group and(2, 3)in group:
-                                        #print(10)
                                         pass
                                     validate(opposite[direction])
                                     continue
                             except IndexError:
                                 if (0, 3) in group and (1, 3) in group and(2, 3)in group:
-                                    #print(11)
                                     pass
                                 continue 
                     except IndexError:
                         if (0, 3) in group and (1, 3) in group and(2, 3)in group:
-                            #print(12)
                             pass
                         continue
             indice_y+=1
@@ -158,18 +145,9 @@ state = [
 			['W', 'W', 'W', 'W', 'W', 'W', 'X', 'X', 'X'],
 			['E', 'E', 'W', 'W', 'W', 'E', 'E', 'X', 'X'],
 			['E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'X'],
-			['E', 'E', 'E', 'E', 'W', 'E', 'E', 'E', 'E'],
-			['X', 'E', 'E', 'E', 'W', 'E', 'E', 'E', 'E'],
+			['E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E'],
+			['X', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E'],
 			['X', 'X', 'E', 'E', 'B', 'B', 'B', 'E', 'E'],
 			['X', 'X', 'X', 'B', 'B', 'B', 'B', 'B', 'B'],
 			['X', 'X', 'X', 'X', 'B', 'B', 'B', 'B', 'B']
 		]
-
-counter = 0
-xcounter = 0
-for i in good_moves(state, 'W'):
-    if len(i) == 4:
-        xcounter+=1
-        print(xcounter)
-        print(i)
-    
