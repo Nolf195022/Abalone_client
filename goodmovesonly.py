@@ -4,7 +4,6 @@ def good_moves(board,player):
         adversary = 'W'
     else:
         adversary = 'B'
-    symbols = ['B', 'W']
     directions = {
         'NE': (-1,  0),
         'SW': ( 1,  0),
@@ -32,22 +31,18 @@ def good_moves(board,player):
                     group = {coord}
                     dx, dy = directions[direction]
                     try:
-                        while board[indice_x+len(group)*dx][indice_y+len(group)*dy] == player and len(group)<3:
+                        while board[indice_x+len(group)*dx][indice_y+len(group)*dy] == player and len(group)<3 and -1 not in (indice_x+len(group)*dx,indice_y+len(group)*dy):
                             group.add((indice_x+len(group)*dx,indice_y+len(group)*dy))
                     except IndexError:
                         pass
-                    if (0, 3) in group and (1, 3) in group and(2, 3)in group:
-                        #print(group,coord)
-                        pass
                     if len(group) == 1:
                         try:
-                            if board[indice_x+dx][indice_y+dy] == 'E':
+                            if board[indice_x+dx][indice_y+dy] == 'E' and -1 not in (indice_x+dx,indice_y+dy):
                                 group.add(direction)
                                 if group not in result:
                                     result.append(group)
                                 continue
-                            else:
-                                continue
+                            continue
                         except IndexError:
                             continue
                     #obtenir les tête de ligne en fonction de la direction du mouvement (dans les 2 directions)
@@ -65,8 +60,6 @@ def good_moves(board,player):
                                     directioncoord = coords
                         return directioncoord
                     xmax, ymax = grouphead(1)
-                    xmin, ymin = grouphead(-1)
-
                     def validate(direction=direction):
                         groupX = group.copy()
                         groupX.add(direction)
@@ -77,65 +70,31 @@ def good_moves(board,player):
                         if xmax+dx == -1 or ymax+dy == -1:
                             continue
                         if board[xmax+dx][ymax+dy] in ['X',player]:
-                            if (0, 3) in group and (1, 3) in group and(2, 3)in group:
-                                pass
                             continue
                         if board[xmax+dx][ymax+dy] == 'E':
-                            if (0, 3) in group and (1, 3) in group and(2, 3)in group:
-                                pass
                             validate()
                             continue
-                        else:
-                            try:
-                                if board[xmax+2*dx][ymax+2*dy] == 'E':
-                                    if (0, 3) in group and (1, 3) in group and(2, 3)in group:
-                                        pass
+                        try:
+                            if -1  in (xmax+2*dx,ymax+2*dy): #kill
+                                validate()
+                                continue
+                            if board[xmax+2*dx][ymax+2*dy] == player and -1 not in (xmax+2*dx,ymax+2*dy):
+                                continue
+                            if board[xmax+2*dx][ymax+2*dy] == adversary and -1 not in (xmax+2*dx,ymax+2*dy):
+                                try:
+                                    if board[xmax+3*dx][ymax+3*dy] in [player,adversary] and -1 not in (xmax+3*dx,ymax+3*dy):
+                                        continue
+                                except IndexError:
+                                    if len(group) == 3: #kill
+                                        validate() 
+                                        continue
+                                if len(group) == 3:
                                     validate()
                                     continue
-                                elif board[xmax+3*dx][ymax+3*dy] == 'E' and board[xmax+2*dx][ymax+2*dy] != player and len(group) == 3:
-                                    if (0, 3) in group and (1, 3) in group and(2, 3)in group:
-                                        pass
-                                    validate()
-                                    continue
-                            except IndexError:
-                                if (0, 3) in group and (1, 3) in group and(2, 3)in group:
-                                    pass
-                                continue 
+                        except IndexError: #kill
+                            validate()
+                            continue
                     except IndexError:
-                        if (0, 3) in group and (1, 3) in group and(2, 3)in group:
-                            pass
-                        continue
-                    try:
-                        if xmin-dx == -1 or ymax-dy == -1:
-                            continue
-                        if board[xmin-dx][ymin-dy] in ['X',player]:
-                            if (0, 3) in group and (1, 3) in group and(2, 3)in group:
-                                pass
-                            continue
-                        if board[xmin-dx][ymin-dy] == 'E':
-                            if (0, 3) in group and (1, 3) in group and(2, 3)in group:
-                                pass
-                            validate(opposite[direction])
-                            continue
-                        else:
-                            try:
-                                if board[xmin-2*dx][ymin-2*dy] == 'E':
-                                    if (0, 3) in group and (1, 3) in group and(2, 3)in group:
-                                        pass
-                                    validate(opposite[direction])
-                                    continue
-                                elif board[xmin-3*dx][ymin-3*dy] == 'E' and board[xmin-2*dx][ymin-2*dy] != player and len(group) == 3:
-                                    if (0, 3) in group and (1, 3) in group and(2, 3)in group:
-                                        pass
-                                    validate(opposite[direction])
-                                    continue
-                            except IndexError:
-                                if (0, 3) in group and (1, 3) in group and(2, 3)in group:
-                                    pass
-                                continue 
-                    except IndexError:
-                        if (0, 3) in group and (1, 3) in group and(2, 3)in group:
-                            pass
                         continue
             indice_y+=1
         indice_x+=1
@@ -151,3 +110,4 @@ state = [
 			['X', 'X', 'X', 'B', 'B', 'B', 'B', 'B', 'B'],
 			['X', 'X', 'X', 'X', 'B', 'B', 'B', 'B', 'B']
 		]
+print(len(good_moves(state, "W")))
