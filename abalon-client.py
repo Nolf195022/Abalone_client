@@ -51,8 +51,6 @@ def SENDmove(server_request):
     moves = good_moves(server_request['state']['board'],playercolors[playerindice])
     move = random.choice(moves)
     marbles = []
-    if  move[0] == 'kill':
-        print('kill')
     for i in move[1]:
         if type(i) is tuple:
             marbles.append(list(i))
@@ -60,7 +58,6 @@ def SENDmove(server_request):
             direction = i
     moverequest = {"marbles": marbles,"direction": direction}
     return {"response": "move","move": moverequest,"message": "Fun message from{}".format(server_request['state']['players'][playerindice])}
-
 
 if len(sys.argv) == 2:
     port = sys.argv[1]
