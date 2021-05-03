@@ -40,7 +40,7 @@ def good_moves(board,player):
                             if board[indice_x+dx][indice_y+dy] == 'E' and -1 not in (indice_x+dx,indice_y+dy):
                                 group.add(direction)
                                 if group not in result:
-                                    result.append(group)
+                                    result.append([(indice_x+dx,indice_y+dy),group])
                                 continue
                             continue
                         except IndexError:
@@ -60,54 +60,69 @@ def good_moves(board,player):
                                     directioncoord = coords
                         return directioncoord
                     xmax, ymax = grouphead(1)
-                    def validate(direction=direction):
+                    def validate(argument="None"):
                         groupX = group.copy()
                         groupX.add(direction)
+                        answer = [argument, groupX]
                         if groupX not in result:
-                            result.append(groupX)
+                            result.append(answer)
                     #eliminer les series de plus de 3 pions et les series qui se suicideraient
                     try:
-                        if xmax+dx == -1 or ymax+dy == -1:
+                        if -1  in (xmax+dx,ymax+dy): #suicide
                             continue
-                        if board[xmax+dx][ymax+dy] in ['X',player]:
+                        if board[xmax+dx][ymax+dy] == 'E': #simple move
+                            validate((xmax+dx,ymax+dy))
                             continue
-                        if board[xmax+dx][ymax+dy] == 'E':
-                            validate()
+                    except IndexError: #suicide
+                        continue
+                    if board[xmax+dx][ymax+dy] in ['X',player]: #suicide or serie of 4
+                        continue
+                    #board[xmax+dx][ymax+dy] = adversary
+                    try:
+                        if -1  in (xmax+2*dx,ymax+2*dy):
+                            validate("kill")
                             continue
-                        try:
-                            if -1  in (xmax+2*dx,ymax+2*dy): #kill
-                                validate()
-                                continue
-                            if board[xmax+2*dx][ymax+2*dy] == player and -1 not in (xmax+2*dx,ymax+2*dy):
-                                continue
-                            if board[xmax+2*dx][ymax+2*dy] == adversary and -1 not in (xmax+2*dx,ymax+2*dy):
-                                try:
-                                    if board[xmax+3*dx][ymax+3*dy] in [player,adversary] and -1 not in (xmax+3*dx,ymax+3*dy):
-                                        continue
-                                except IndexError:
-                                    if len(group) == 3: #kill
-                                        validate() 
-                                        continue
-                                if len(group) == 3:
-                                    validate()
-                                    continue
-                        except IndexError: #kill
-                            validate()
+                        if board[xmax+2*dx][ymax+2*dy] == "X":
+                            validate("kill")
                             continue
                     except IndexError:
+                        validate("kill")
                         continue
+                    if board[xmax+2*dx][ymax+2*dy] == "E":
+                        validate(["push",(xmax+2*dx,ymax+2*dy)])
+                        continue
+                    if board[xmax+2*dx][ymax+2*dy] == player: #blocked by ally
+                        continue
+                    if board[xmax+2*dx][ymax+2*dy] == adversary:
+                        if len(group) == 2: #not enough pushpower
+                            continue
+                        try:
+                            if -1  in (xmax+3*dx,ymax+3*dy):
+                                validate("kill") 
+                                continue
+                            if board[xmax+3*dx][ymax+3*dy] in [player,adversary]: #blocked
+                                continue
+                        except IndexError:
+                            validate("kill") 
+                            continue
+                        if board[xmax+3*dx][ymax+3*dy] == "X":
+                            validate("kill")
+                            continue
+                        if board[xmax+3*dx][ymax+3*dy] == "E":
+                            validate(["doublepush",(xmax+3*dx,ymax+3*dy)])
+                            continue
             indice_y+=1
         indice_x+=1
     return result
-state = [
-			['W', 'W', 'W', 'W', 'W', 'X', 'X', 'X', 'X'],
+
+board = [
+			['W', 'W', 'W', 'W', 'B', 'X', 'X', 'X', 'X'],
 			['W', 'W', 'W', 'W', 'W', 'W', 'X', 'X', 'X'],
 			['E', 'E', 'W', 'W', 'W', 'E', 'E', 'X', 'X'],
 			['E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'X'],
-			['E', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E'],
-			['X', 'E', 'E', 'E', 'E', 'E', 'E', 'E', 'E'],
+			['E', 'E', 'E', 'E', 'W', 'E', 'E', 'E', 'E'],
+			['X', 'E', 'E', 'E', 'W', 'E', 'E', 'E', 'E'],
 			['X', 'X', 'E', 'E', 'B', 'B', 'B', 'E', 'E'],
 			['X', 'X', 'X', 'B', 'B', 'B', 'B', 'B', 'B'],
 			['X', 'X', 'X', 'X', 'B', 'B', 'B', 'B', 'B']
 		]
-print(len(good_moves(state, "W")))

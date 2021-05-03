@@ -40,7 +40,6 @@ def subscribe(port,name):
         s.listen()
         client, address = s.accept()
         serverrequest = receiveJSON(client)
-        print(serverrequest)
         if serverrequest['request'] == 'ping':
             sendJSON(client, {'response': 'pong'})
             listening = False
@@ -52,7 +51,9 @@ def SENDmove(server_request):
     moves = good_moves(server_request['state']['board'],playercolors[playerindice])
     move = random.choice(moves)
     marbles = []
-    for i in move:
+    if  move[0] == 'kill':
+        print('kill')
+    for i in move[1]:
         if type(i) is tuple:
             marbles.append(list(i))
         else:
