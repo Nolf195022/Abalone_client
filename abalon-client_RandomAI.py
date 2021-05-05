@@ -5,7 +5,6 @@ import random
 import time
 from threading import Thread
 from goodmovesonly import good_moves
-from betterAI import bestmove
 
 def receiveJSON(socket):
     fullreceive = False
@@ -49,7 +48,8 @@ def SENDmove(server_request):
     # 'current': 0 -> black, 'current': 1 -> white
     playercolors = ['B','W']
     playerindice = server_request['state']['current']
-    move = bestmove(server_request['state']['board'],playercolors[playerindice])
+    moves = good_moves(server_request['state']['board'],playercolors[playerindice])
+    move = random.choice(moves)
     marbles = []
     for i in move[1]:
         if type(i) is tuple:
@@ -69,8 +69,8 @@ elif len(sys.argv) > 3:
     print('Invalid input')
     sys.exit()
 else:
-    port = '5050'
-    name = 'Better AI'
+    port = '5000'
+    name = 'Random AI'
 subscribe(port, name)
 listening = True
 while listening == True:

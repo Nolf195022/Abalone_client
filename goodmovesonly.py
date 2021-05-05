@@ -1,4 +1,17 @@
 import time
+def grouphead(value,dx,dy,group):
+    directioncoord = None
+    initiatecord = True
+    for coords in group:
+        x, y = coords
+        if initiatecord == True:
+            directioncoord = coords
+            initiatecord = False
+        else:
+            xmax, ymax = directioncoord
+            if (xmax+value*dx,ymax+value*dy) in group and ((xmax+value*dx,ymax+value*dy) == (x,y) or (xmax+value*2*dx,ymax+value*2*dy) == (x,y)):
+                directioncoord = coords
+    return directioncoord
 def good_moves(board,player):
     if player == 'B':
         adversary = 'W'
@@ -46,20 +59,8 @@ def good_moves(board,player):
                         except IndexError:
                             continue
                     #obtenir les tête de ligne en fonction de la direction du mouvement (dans les 2 directions)
-                    def grouphead(value):
-                        directioncoord = None
-                        initiatecord = True
-                        for coords in group:
-                            x, y = coords
-                            if initiatecord == True:
-                                directioncoord = coords
-                                initiatecord = False
-                            else:
-                                xmax, ymax = directioncoord
-                                if (xmax+value*dx,ymax+value*dy) in group and ((xmax+value*dx,ymax+value*dy) == (x,y) or (xmax+value*2*dx,ymax+value*2*dy) == (x,y)):
-                                    directioncoord = coords
-                        return directioncoord
-                    xmax, ymax = grouphead(1)
+                    
+                    xmax, ymax = grouphead(1,dx,dy,group)
                     def validate(argument="None"):
                         groupX = group.copy()
                         groupX.add(direction)
