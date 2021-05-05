@@ -1,7 +1,7 @@
 # Abalone_client
 Pour lancer le client : (dans le bon dossier)
 
-$ python abalon-client.py [port](éventuel) [pseudo](éventuel et sans espaces)
+$ python abalon-client.py port(éventuel) pseudo(éventuel et sans espaces)
  
 Stratégie :
 
