@@ -58,9 +58,16 @@ def SENDmove(server_request):
     moverequest = {"marbles": marbles,"direction": direction}
     return {"response": "move","move": moverequest}
 
+defaultport = '5000'
+defaultname = 'Random AI'
 if len(sys.argv) == 2:
-    port = sys.argv[1]
-    name = 'Random AI'
+    try:
+        isinteger = int(sys.argv[1])
+        port = sys.argv[1]
+        name = defaultname
+    except:
+        port = defaultport
+        name = sys.argv[1]
 elif len(sys.argv) == 3:
     port = sys.argv[1]
     name = sys.argv[2]
@@ -68,8 +75,8 @@ elif len(sys.argv) > 3:
     print('Invalid input')
     sys.exit()
 else:
-    port = '5000'
-    name = 'Random AI'
+    port = defaultport
+    name = defaultname
 subscribe(port, name)
 listening = True
 while listening == True:
