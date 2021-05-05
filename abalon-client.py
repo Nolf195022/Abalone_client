@@ -3,7 +3,6 @@ import json
 import sys
 import random
 import time
-from threading import Thread
 from goodmovesonly import good_moves
 from betterAI import bestmove
 
