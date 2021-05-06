@@ -4,7 +4,7 @@ import sys
 import random
 import time
 from goodmovesonly import good_moves
-from betterAI import bestmove
+from betterai import bestmove
 
 def receiveJSON(socket):
     fullreceive = False
@@ -49,6 +49,7 @@ def SENDmove(server_request):
     playercolors = ['B','W']
     playerindice = server_request['state']['current']
     move = bestmove(server_request['state']['board'],playercolors[playerindice])
+    print(move)
     marbles = []
     for i in move[1]:
         if type(i) is tuple:
@@ -58,14 +59,14 @@ def SENDmove(server_request):
     moverequest = {"marbles": marbles,"direction": direction}
     return {"response": "move","move": moverequest}
 
-defaultport = '5996''
+defaultport = '5996'
 defaultname = 'Better AI'
 if len(sys.argv) == 2:
     try:
         isinteger = int(sys.argv[1])
         port = sys.argv[1]
         name = defaultname
-    except:
+    except ValueError:
         port = defaultport
         name = sys.argv[1]
 elif len(sys.argv) == 3:

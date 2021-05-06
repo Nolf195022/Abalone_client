@@ -65,7 +65,7 @@ if len(sys.argv) == 2:
         isinteger = int(sys.argv[1])
         port = sys.argv[1]
         name = defaultname
-    except:
+    except ValueError:
         port = defaultport
         name = sys.argv[1]
 elif len(sys.argv) == 3:

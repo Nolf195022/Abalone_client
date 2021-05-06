@@ -59,7 +59,6 @@ def good_moves(board,player):
                         except IndexError:
                             continue
                     #obtenir les tête de ligne en fonction de la direction du mouvement (dans les 2 directions)
-                    
                     xmax, ymax = grouphead(1,dx,dy,group)
                     def validate(argument="None"):
                         groupX = group.copy()
