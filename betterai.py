@@ -28,6 +28,8 @@ opposite = {
         'E': 'W',
         'W': 'E'
     }
+lastmoves = []
+
 def stateXdisplay(board):
     for i in board:
         pass
@@ -106,6 +108,11 @@ def bestmove(state, player):
     moves = good_moves(state, player)
     if len(moves) == 0:
         return "giveup"
+    indice = 0
+    for move in moves:
+        if move in lastmoves:
+            moves.pop(indice)
+        indice+=1
     score = get_score(state, player)
     killmoves = getkillmoves(moves)
     killmoves = random.sample(killmoves, len(killmoves))
@@ -193,3 +200,12 @@ def bestmove(state, player):
                 continue
         return random.choice(killmoves)
     return random.choice(moves)
+
+def bestmove_unrepeated(state,player):
+    move = bestmove(state, player)
+    if len(lastmoves) < 4:
+        lastmoves.append(move)
+    else:
+        lastmoves.pop(0)
+        lastmoves.append(move)
+    return move

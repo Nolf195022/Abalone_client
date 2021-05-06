@@ -4,7 +4,7 @@ import sys
 import random
 import time
 from goodmovesonly import good_moves
-from betterai import bestmove
+from betterai import bestmove_unrepeated
 
 def receiveJSON(socket):
     fullreceive = False
@@ -48,8 +48,9 @@ def SENDmove(server_request):
     # 'current': 0 -> black, 'current': 1 -> white
     playercolors = ['B','W']
     playerindice = server_request['state']['current']
-    move = bestmove(server_request['state']['board'],playercolors[playerindice])
-    print(move)
+    move = bestmove_unrepeated(server_request['state']['board'],playercolors[playerindice])
+    if move == "giveup":
+         return {"response": "giveup"}
     marbles = []
     for i in move[1]:
         if type(i) is tuple:
@@ -86,10 +87,10 @@ while listening == True:
         s.listen()
         client, address = s.accept()
         serverrequest = receiveJSON(client)
-        print(serverrequest['request'])
+        #print(serverrequest['request'])
         if serverrequest['request'] == 'ping':
             sendJSON(client, {'response': 'pong'})
         if serverrequest['request'] == 'play':
-            start = time.time()
+            #start = time.time()
             sendJSON(client, SENDmove(serverrequest))
-            print('Temps de réponse : {} s'.format(time.time()-start))
+            #print('Temps de réponse : {} s'.format(time.time()-start))
