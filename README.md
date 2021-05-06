@@ -12,6 +12,9 @@ Si ce n'est pas possible on regarde si un pion alié peut être éiminé au proc
 Dans le cas ou un/des pion(s) est/sont en danger on essaye de défendre (l')un des pion(s).
 Autrement on calcule les coups qui ne mette pas de pions en position de danger pour le prochain tour, la liste de moves étant appellé neutralmoves.
 Dans les neutralmoves on regarde si il est possible de dégager les bordures du plateau sinon on dirige les pions vers le centre du plateau.
+Si il y a un bug dans la recherche du meilleur move, un move aléatoire est envoyé.
+Si aucun move n'est possible, on abandone.
+
 
 bibliothèques utilisées :
 

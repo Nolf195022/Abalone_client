@@ -75,7 +75,6 @@ def makemove(state, move, player):
     except IndexError:
         stateXdisplay(stateX)
         return stateX
-
 def get_score(board,player):
     if player == 'B':
         adversary = 'W'
@@ -99,13 +98,14 @@ def getkillmoves(moveslist):
         if "kill" in move:
             result.append(move)
     return result
-
 def bestmove(state, player):
     if player == 'B':
         adversary = 'W'
     else:
         adversary = 'B'
     moves = good_moves(state, player)
+    if len(moves) == 0:
+        return "giveup"
     score = get_score(state, player)
     killmoves = getkillmoves(moves)
     killmoves = random.sample(killmoves, len(killmoves))
@@ -142,7 +142,6 @@ def bestmove(state, player):
                     if len(move[1]) == 3:
                         return move
                 return random.choice(getcentermoves)
-            print("escape border", move)
             return random.choice(escapebordermoves)
         else:    
             for advmove in random.sample(advkillmoves,len(advkillmoves)):
@@ -176,6 +175,13 @@ def bestmove(state, player):
                     if len(getkillmoves(good_moves(makemove(state, move, player),adversary))) > len(advkillmoves):
                         continue
                     return move
+            neutralmoves = []
+            for move in moves:
+                if len(getkillmoves(good_moves(makemove(state, move, player),adversary))) == 0:
+                    neutralmoves.append(move)
+            if len(neutralmoves) == 0:
+                return random.choice(moves)
+            return random.choice(neutralmoves)     
     else:    
         if score['player'] == 5 or score['player'] > score['adversary']:
             return random.choice(killmoves)
@@ -186,21 +192,4 @@ def bestmove(state, player):
             if len(getkillmoves(good_moves(makemove(state, move, player),adversary))) > len(advkillmoves):
                 continue
         return random.choice(killmoves)
-    return "unexpected scenario"
-    #return random.choice(moves)
-
-
-boarde=  [
-["W", "W", "W", "W", "W", "X", "X", "X", "X"],
-["W", "W", "W", "W", "W", "W", "X", "X", "X"],
-["E", "E", "W", "W", "W", "E", "E", "X", "X"],
-["E", "E", "E", "E", "E", "E", "E", "E", "X"],
-["E", "E", "E", "W", "E", "E", "E", "E", "E"],
-["X", "E", "W", "W", "E", "E", "E", "E", "E"],
-["X", "X", "B", "W", "E", "E", "E", "E", "E"],
-["X", "X", "X", "W", "B", "B", "E", "E", "E"],
-["X", "X", "X", "X", "B", "E", "E", "E", "B"]
-]
-
-
-            
+    return random.choice(moves)
