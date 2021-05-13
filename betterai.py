@@ -114,11 +114,13 @@ def bestmove(state, player):
             moves.pop(indice)
         indice+=1
     score = get_score(state, player)
+#define move priority order
     killmoves = getkillmoves(moves)
     killmoves = random.sample(killmoves, len(killmoves))
     if len(killmoves) == 0 or (score['adversary'] > 3 and score['player'] <= score['adversary']):
         advkillmoves = getkillmoves(good_moves(state, adversary))
         if len(advkillmoves) == 0:
+		#look for moves that will not give advantage to adversary
             neutralmoves = []
             for move in moves:
                 if len(getkillmoves(good_moves(makemove(state, move, player),adversary))) == 0:
@@ -151,6 +153,7 @@ def bestmove(state, player):
                 return random.choice(getcentermoves)
             return random.choice(escapebordermoves)
         else:    
+		#find marbles that are in danger and try to protect them
             for advmove in random.sample(advkillmoves,len(advkillmoves)):
                 marbles = []
                 for item in advmove[1]:
@@ -201,6 +204,7 @@ def bestmove(state, player):
         return random.choice(killmoves)
     return random.choice(moves)
 
+#prevent infinite game loops by saving 3 last gamemoves and gamestates.
 def bestmove_unrepeated(state,player):
     move = bestmove(state, player)
     if len(lastmoves) < 4:
