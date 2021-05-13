@@ -6,6 +6,7 @@ import time
 from goodmovesonly import good_moves
 from betterai import bestmove_unrepeated
 
+
 def receiveJSON(socket):
     fullreceive = False
     message = ''
@@ -51,6 +52,7 @@ def SENDmove(server_request):
     move = bestmove_unrepeated(server_request['state']['board'],playercolors[playerindice])
     if move == "giveup":
          return {"response": "giveup"}
+    #convert bestmove_unrepeated function output, into valid input for server communication
     marbles = []
     for i in move[1]:
         if type(i) is tuple:
@@ -62,6 +64,7 @@ def SENDmove(server_request):
 
 defaultport = '5996'
 defaultname = 'Better AI'
+#watch for eventual user inputs (port and/or username)
 if len(sys.argv) == 2:
     try:
         isinteger = int(sys.argv[1])
@@ -79,7 +82,10 @@ elif len(sys.argv) > 3:
 else:
     port = defaultport
     name = defaultname
+    
 subscribe(port, name)
+
+# requests listener
 listening = True
 while listening == True:
         s = socket.socket()
