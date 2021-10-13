@@ -1,5 +1,6 @@
 # Abalone_client
 Pour lancer le serveur de jeu : cloner le répertoire de l'enseignant : https://github.com/qlurkin/PI2CChampionshipRunner
+
 Exécuter la commande suivante dans le répertoire cloné :
 
 $ python server.py abalone
