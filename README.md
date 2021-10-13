@@ -18,6 +18,7 @@ A noter :
 Pour que la partie commence il faut aux moins 2 joueurs. Il faudra donc lancer le client dans 2 terminaux différents (sans utiliser le me même port).
 
 $ python abalon-client.py 5200 Player1
+
 $ python abalon-client.py 5300 Player2
 
 Stratégie :
