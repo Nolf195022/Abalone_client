@@ -1,7 +1,23 @@
 # Abalone_client
+Pour lancer le serveur de jeu : cloner le répertoire de l'enseignant : https://github.com/qlurkin/PI2CChampionshipRunner
+Exécuter la commande suivante dans le répertoire cloné :
+
+$ python server.py abalone
+
 Pour lancer le client : (dans le bon dossier)
 
-$ python abalon-client.py port (éventuel) pseudo (éventuel et sans espaces)
+$ python abalon-client.py [port]  [pseudo] (sans espaces)
+
+Exemple : 
+
+$ python abalon-client.py 5200 Player1
+
+A noter :
+
+Pour que la partie commence il faut aux moins 2 joueurs. Il faudra donc lancer le client dans 2 terminaux différents (sans utiliser le me même port).
+
+$ python abalon-client.py 5200 Player1
+$ python abalon-client.py 5300 Player2
 
 Stratégie :
 
